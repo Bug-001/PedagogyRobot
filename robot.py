@@ -35,6 +35,7 @@ class Robot:
         urls.OpenHomeworkInterface(self.driver)
         try:
             while True:
+                time.sleep(3)
                 for id, judger in config.items():
                     ans = self.driver.find_element_by_xpath(urls.getAnswerXPath(id)).text
                     score = judger(ans)
