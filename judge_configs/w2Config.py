@@ -1,26 +1,28 @@
-from utils import fillInTheBlanks
+from judge_configs.utils import fillInTheBlanks
 
-@fillInTheBlanks
+@fillInTheBlanks(5)
 def W2_1(ans: str):
     return ['6','9']
 
-@fillInTheBlanks
+@fillInTheBlanks(5)
 def W2_8(ans: str):
     return ['21','86','3.25','3','0.5','1.0']
 
-@fillInTheBlanks
+@fillInTheBlanks(5)
 def W2_9(ans: str):
     return ['True']
 
-@fillInTheBlanks
+@fillInTheBlanks(5)
 def W2_10(ans: str):
     return ['True','False','True']
 
 def W2_11(ans: str):
-    return int(input('11: '))
+    if len(ans) < 10: return 0
+    else: return 5
 
 def W2_12(ans: str):
-    return int(input('12: '))
+    if len(ans) < 10: return 0
+    else: return 5
 
 W2Config = {
     1: W2_1,

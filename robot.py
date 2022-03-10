@@ -4,6 +4,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from exceptions import LoginFailed
 import urls
+import userinfo
 
 class Robot:
     __slots__ = ['driver']
@@ -31,23 +32,45 @@ class Robot:
         else:
             raise LoginFailed("Please check your chrome driver")
 
+    def getAnswer(self, pid):
+        ans = ''
+        j = 1
+        try:
+            while True:
+                ans += self.driver.find_element_by_xpath(urls.getAnswerXPath(pid, j)).text + ' '
+                j += 1
+        except:
+            return ans
+
     def autoJudge(self, config):
         urls.OpenHomeworkInterface(self.driver)
         try:
             while True:
                 time.sleep(3)
-                for id, judger in config.items():
-                    ans = self.driver.find_element_by_xpath(urls.getAnswerXPath(id)).text
-                    score = judger(ans)
-                    print(urls.getJudgeButtonXPath(id))
+                for i, judger in config.items():
+                    ans = self.getAnswer(i)
+                    score_num = judger(ans)
+                    if score_num < 5:
+                        sid = self.driver.find_element_by_xpath(urls.sidXPath).text
+                        print("{} Problem {}: {:.2f}/5".format(sid, i, score_num))
+                        print("Answer: {}".format(ans))
+                    score = '{:.2f}'.format(score_num)
+                    
+                    # print(urls.getJudgeButtonXPath(id))
                     try:
                         # In case that some problem has been judged
-                        self.driver.find_element_by_xpath(urls.getJudgeButtonXPath(id)).click()
+                        self.driver.find_element_by_xpath(urls.getJudgeButtonXPath(i)).click()
                         self.driver.find_element_by_xpath(urls.scoreInputXPath).send_keys(score)
                         self.driver.find_element_by_xpath(urls.confirmScoreButtonXPath).click()
                     except:
+                        # raise
                         pass
                 self.driver.find_element_by_xpath(urls.nextStudentButtonXPath).click()
                 self.driver.implicitly_wait(10)
         except:
-            pass
+            raise
+
+if __name__ == '__main__':
+    r = Robot()
+    r.login(userinfo.username, userinfo.password)
+    urls.OpenHomeworkInterface(r.driver)

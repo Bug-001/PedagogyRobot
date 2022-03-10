@@ -27,11 +27,12 @@ def OpenHomeworkInterface(driver):
     driver.switch_to.window(driver.window_handles[-1])
 
 problemJudgeButtonFormat = "/html/body/div[1]/div/div/div[2]/div[1]/div[1]/div/div/div[2]/div[{}]/div[4]/div[2]/a"
-problemAnswerXPathFormat = "/html/body/div[1]/div/div/div[2]/div[1]/div[1]/div/div/div[2]/div[{}]/div[4]/div[1]/p"
-def getJudgeButtonXPath(id):
-    return problemJudgeButtonFormat.format(id + 5)
-def getAnswerXPath(id):
-    return problemAnswerXPathFormat.format(id + 5)
+problemAnswerXPathFormat = "/html/body/div[1]/div/div/div[2]/div[1]/div[1]/div/div/div[2]/div[{}]/div[4]/div[1]/p[{}]"
+def getJudgeButtonXPath(i):
+    return problemJudgeButtonFormat.format(i + 5)
+def getAnswerXPath(i, j):
+    return problemAnswerXPathFormat.format(i + 5, j)
 scoreInputXPath = r"/html/body/div[1]/div/div/div[2]/div[1]/div[2]/div[2]/div/div[2]/div/div[1]/div/span[2]/input"
 confirmScoreButtonXPath = r"/html/body/div[1]/div/div/div[2]/div[1]/div[2]/div[2]/div/div[3]/button[1]"
 nextStudentButtonXPath = r"/html/body/div[1]/div/div/div[2]/div[1]/div[1]/div/div/div[2]/div[5]/strong[2]/a"
+sidXPath = r"/html/body/div[1]/div/div/div[2]/div[1]/div[1]/div/div/div[2]/div[3]/table/tbody/tr[1]/td[2]"
