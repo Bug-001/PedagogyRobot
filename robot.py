@@ -1,3 +1,4 @@
+import logging
 import time
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -28,19 +29,13 @@ class Robot:
         time.sleep(0.5)
 
         if self.driver.current_url.startswith(urls.SHomeUrl) or self.driver.current_url.startswith(urls.THomeUrl):
-            print("Login Successfully!")
+            logging.info("Login Successfully!")
         else:
             raise LoginFailed("Please check your chrome driver")
 
     def getAnswer(self, pid):
-        ans = ''
-        j = 1
-        try:
-            while True:
-                ans += self.driver.find_element_by_xpath(urls.getAnswerXPath(pid, j)).text + ' '
-                j += 1
-        except:
-            return ans
+        ans = self.driver.find_element_by_xpath(urls.getAnswerXPath(pid)).text
+        return ans.replace('【答题内容】', '')
 
     def autoJudge(self, config):
         urls.OpenHomeworkInterface(self.driver)
@@ -55,8 +50,6 @@ class Robot:
                         print("{} Problem {}: {:.2f}/5".format(sid, i, score_num))
                         print("Answer: {}".format(ans))
                     score = '{:.2f}'.format(score_num)
-                    
-                    # print(urls.getJudgeButtonXPath(id))
                     try:
                         # In case that some problem has been judged
                         self.driver.find_element_by_xpath(urls.getJudgeButtonXPath(i)).click()
