@@ -17,6 +17,10 @@ class Robot:
         opt.add_experimental_option('w3c', False)
         opt.add_argument('log-level=3')
         self.driver = webdriver.Chrome(options=opt, desired_capabilities=caps)
+        logging.basicConfig(format='[%(asctime)s]%(levelname)s: %(message)s', 
+                            datefmt='%m/%d %H:%M:%S',
+                            filename='log.txt', 
+                            level=logging.INFO)
 
     def login(self, username, password):
         self.driver.delete_all_cookies()
@@ -31,6 +35,7 @@ class Robot:
         if self.driver.current_url.startswith(urls.SHomeUrl) or self.driver.current_url.startswith(urls.THomeUrl):
             logging.info("Login Successfully!")
         else:
+            logging.critical("Login failed, please check your chrome driver")
             raise LoginFailed("Please check your chrome driver")
 
     def getAnswer(self, pid):
@@ -43,12 +48,12 @@ class Robot:
             while True:
                 time.sleep(3)
                 for i, judger in config.items():
+                    sid = self.driver.find_element_by_xpath(urls.sidXPath).text
                     ans = self.getAnswer(i)
                     score_num = judger(ans)
                     if score_num < 5:
-                        sid = self.driver.find_element_by_xpath(urls.sidXPath).text
-                        print("{} Problem {}: {:.2f}/5".format(sid, i, score_num))
-                        print("Answer: {}".format(ans))
+                        logging.warning("{} Problem {}: {:.2f}/5".format(sid, i, score_num))
+                        logging.warning("Answer: {}".format(ans))
                     score = '{:.2f}'.format(score_num)
                     try:
                         # In case that some problem has been judged
@@ -56,12 +61,11 @@ class Robot:
                         self.driver.find_element_by_xpath(urls.scoreInputXPath).send_keys(score)
                         self.driver.find_element_by_xpath(urls.confirmScoreButtonXPath).click()
                     except:
-                        # raise
-                        pass
+                        logging.INFO('Judgement of {} completed, score {:.2f}/5'.format(sid, score_num))
                 self.driver.find_element_by_xpath(urls.nextStudentButtonXPath).click()
                 self.driver.implicitly_wait(10)
         except:
-            raise
+            logging.info('Judge Completed')
 
 if __name__ == '__main__':
     r = Robot()

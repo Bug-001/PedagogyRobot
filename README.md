@@ -6,3 +6,5 @@ Set your Pedagogy Square account information in `userinfo.py`, then run
 python main.py
 ```
 and enjoy your free afternoon with a cup of Cappuccino.
+
+Judgement info will be logged into `log.txt`.
